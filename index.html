@@ -8,6 +8,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         html {
             scroll-behavior: smooth;
         }
@@ -30,16 +41,14 @@
                 });
             });
         });
-        
-        tailwind.config = { darkMode: 'class' }
+
+        tailwind.config = { darkMode: 'class' };
 
         function toggleDarkMode() {
             const htmlElement = document.documentElement;
             htmlElement.classList.toggle('dark');
-            
             document.getElementById('darkModeIcon').classList.toggle('hidden');
             document.getElementById('lightModeIcon').classList.toggle('hidden');
-            
             localStorage.setItem('darkMode', htmlElement.classList.contains('dark'));
         }
 
@@ -50,28 +59,38 @@
                 document.getElementById('darkModeIcon').classList.add('hidden');
                 document.getElementById('lightModeIcon').classList.remove('hidden');
             }
+
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeInElements.forEach(element => observer.observe(element));
         });
 
         function handleSubmit(event) {
             event.preventDefault();
-            
             const nameInput = document.getElementById('name');
             const emailInput = document.getElementById('email');
             const messageInput = document.getElementById('message');
             const formStatus = document.getElementById('formStatus');
-            
+
             if (!nameInput.value.trim()) {
                 formStatus.textContent = 'Please enter your name.';
                 formStatus.className = 'text-red-500 text-center mt-2';
                 return;
             }
-            
+
             if (!emailInput.value.trim() || !isValidEmail(emailInput.value)) {
                 formStatus.textContent = 'Please enter a valid email address.';
                 formStatus.className = 'text-red-500 text-center mt-2';
                 return;
             }
-            
+
             if (!messageInput.value.trim()) {
                 formStatus.textContent = 'Please enter a message.';
                 formStatus.className = 'text-red-500 text-center mt-2';
@@ -80,12 +99,11 @@
 
             const subject = encodeURIComponent(`Portfolio Contact: Message from ${nameInput.value}`);
             const body = encodeURIComponent(`Name: ${nameInput.value}\nEmail: ${emailInput.value}\n\nMessage:\n${messageInput.value}`);
-            
             window.location.href = `mailto:randulatheshan5@gmail.com?subject=${subject}&body=${body}`;
-            
+
             formStatus.textContent = 'Message opened in your email client. Please send the email.';
             formStatus.className = 'text-green-500 text-center mt-2';
-            
+
             setTimeout(() => {
                 event.target.reset();
                 formStatus.textContent = '';
@@ -97,7 +115,6 @@
             return re.test(String(email).toLowerCase());
         }
 
-        // Mobile menu toggle
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
             mobileMenu.classList.toggle('hidden');
@@ -109,48 +126,34 @@
     <nav class="bg-white dark:bg-gray-800 shadow-md fixed w-full z-10 top-0">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-gray-800 dark:text-white">Randula Theshan</div>
-            
+
             <!-- Desktop Navigation -->
             <div class="hidden md:flex space-x-4 items-center">
                 <a href="#home" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-300">Home</a>
                 <a href="#about" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-300">About</a>
                 <a href="#projects" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-300">Projects</a>
                 <a href="#contact" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-300">Contact</a>
-                
-                <button 
-                    onclick="toggleDarkMode()" 
-                    class="bg-gray-200 dark:bg-gray-700 p-2 rounded-lg focus:outline-none transition duration-300"
-                    aria-label="Toggle Dark Mode"
-                >
+
+                <button onclick="toggleDarkMode()" class="bg-gray-200 dark:bg-gray-700 p-2 rounded-lg focus:outline-none transition duration-300" aria-label="Toggle Dark Mode">
                     <i id="darkModeIcon" class="fas fa-moon text-gray-800"></i>
                     <i id="lightModeIcon" class="fas fa-sun text-yellow-500 hidden"></i>
                 </button>
             </div>
-            
+
             <!-- Mobile Navigation Toggle -->
             <div class="md:hidden flex items-center">
-                <button 
-                    onclick="toggleDarkMode()" 
-                    class="bg-gray-200 dark:bg-gray-700 p-2 rounded-lg focus:outline-none"
-                    aria-label="Toggle Dark Mode"
-                >
+                <button onclick="toggleDarkMode()" class="bg-gray-200 dark:bg-gray-700 p-2 rounded-lg focus:outline-none" aria-label="Toggle Dark Mode">
                     <i class="fas fa-moon text-gray-800 dark:hidden"></i>
                     <i class="fas fa-sun text-yellow-500 hidden dark:inline"></i>
-                </button>&nbsp&nbsp
-                <button 
-                    onclick="toggleMobileMenu()" 
-                    class="text-gray-600 dark:text-gray-300 focus:outline-none"
-                >
+                </button>&nbsp;&nbsp;
+                <button onclick="toggleMobileMenu()" class="text-gray-600 dark:text-gray-300 focus:outline-none">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
             </div>
         </div>
-        
+
         <!-- Mobile Menu -->
-        <div 
-            id="mobileMenu" 
-            class="md:hidden hidden absolute top-full left-0 w-full bg-white dark:bg-gray-800 shadow-md"
-        >
+        <div id="mobileMenu" class="md:hidden hidden absolute top-full left-0 w-full bg-white dark:bg-gray-800 shadow-md">
             <div class="flex flex-col items-center py-4 space-y-4">
                 <a href="#home" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">Home</a>
                 <a href="#about" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">About</a>
@@ -161,13 +164,9 @@
     </nav>
 
     <!-- Hero Section -->
-    <header id="home" class="pt-20 pb-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+    <header id="home" class="pt-20 pb-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white fade-in">
         <div class="max-w-4xl mx-auto px-4 text-center">
-            <img 
-                src="profile.png" 
-                alt="Profile" 
-                class="w-48 h-48 rounded-full mx-auto mb-6 border-4 border-white shadow-lg"
-            >
+            <img src="profile.png" alt="Profile" class="w-48 h-48 rounded-full mx-auto mb-6 border-4 border-white shadow-lg">
             <h1 class="text-4xl font-bold mb-4">Randula Theshan</h1>
             <p class="text-xl mb-6">Web Developer | Creative Web Designer</p>
             <div class="flex justify-center space-x-4">
@@ -191,17 +190,12 @@
     </header>
 
     <!-- About Section -->
-    <section id="about" class="py-16 bg-white dark:bg-gray-800">
+    <section id="about" class="py-16 bg-white dark:bg-gray-800 fade-in">
         <div class="max-w-4xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">About Me</h2>
             <div class="text-center text-gray-600 dark:text-gray-300">
-                <p class="mb-4">
-                    I'm a passionate software developer with experience in web technologies, 
-                    creating innovative solutions that blend creativity and technical expertise.
-                </p>
-                <p>
-                    My goal is to build meaningful projects that make a positive impact.
-                </p>
+                <p class="mb-4">I'm a passionate software developer with experience in web technologies, creating innovative solutions that blend creativity and technical expertise.</p>
+                <p>My goal is to build meaningful projects that make a positive impact.</p>
             </div>
         </div>
         <div class="flex flex-col items-center justify-center space-y-8 mt-8">
@@ -225,7 +219,7 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-16 bg-gray-100 dark:bg-gray-900">
+    <section id="projects" class="py-16 bg-gray-100 dark:bg-gray-900 fade-in">
         <div class="max-w-4xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">Projects</h2>
             <div class="grid md:grid-cols-3 gap-6">
@@ -260,7 +254,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-16 bg-white dark:bg-gray-800">
+    <section id="contact" class="py-16 bg-white dark:bg-gray-800 fade-in">
         <div class="max-w-4xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">Contact Me</h2>
             <form 
