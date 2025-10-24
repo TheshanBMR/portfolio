@@ -23,23 +23,15 @@
             scroll-behavior: smooth;
         }
 
-        .scroll-container {
+        /* Hide scrollbar on entire page */
+        html {
           overflow: auto;
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
         }
         
-        .scroll-container::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .scroll-container:hover::-webkit-scrollbar {
-          display: block;
-          width: 8px;
-        }
-        
-        .scroll-container:hover {
-          scrollbar-width: thin;
+        html::-webkit-scrollbar {
+          display: none;  /* Chrome, Safari, Opera */
         }
     </style>
     <script>
@@ -329,5 +321,6 @@
     </footer>
 </body>
 </html>
+
 
 
