@@ -22,6 +22,25 @@
         html {
             scroll-behavior: smooth;
         }
+
+        .scroll-container {
+          overflow: auto;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .scroll-container:hover::-webkit-scrollbar {
+          display: block;
+          width: 8px;
+        }
+        
+        .scroll-container:hover {
+          scrollbar-width: thin;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -310,4 +329,5 @@
     </footer>
 </body>
 </html>
+
 
